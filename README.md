@@ -1,2 +1,2 @@
 # Carteado
-Jogo de cartas - POO - CaixaVerso
+Aulas Práticas POO - Jogo de cartas - CaixaVerso
