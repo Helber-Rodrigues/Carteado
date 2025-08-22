@@ -1,32 +1,34 @@
-namespace Modelos
+
+using System.Diagnostics.Contracts;
+
+namespace Modelos;
+
+class Carta
 {
-    class Carta
+    private int Valor;
+
+    public Carta(int valor)
     {
-        public int Valor;
-
-        public Carta(int valor)
-        {
-            Valor = valor;
-        }
-
-        public virtual int Pontuacao()
-        {
-            return Valor;
-        }
+        Valor = valor;
     }
 
-    class CartaComMultiplicador : Carta
+    virtual public int Pontuacao()
     {
-        public int Multiplicador { get; private set; }
+        return Valor;
+    }
+}
 
-        public CartaComMultiplicador(int valor, int multiplicador) : base(valor)
-        {
-            Multiplicador = multiplicador;
-        }
+class CartaComMultiplicador : Carta
+{
+    public int Multiplicador { get; private set; }
 
-        public override int Pontuacao()
-        {
-            return Valor * Multiplicador;
-        }
+    public CartaComMultiplicador(int valor, int multiplicador) : base(valor)
+    {
+        Multiplicador = multiplicador;
+    }
+
+    override public int Pontuacao()
+    {
+        return base.Pontuacao() * Multiplicador;
     }
 }

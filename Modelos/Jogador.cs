@@ -2,11 +2,19 @@ namespace Modelos
 {
     class Jogador
     {
-        public Carta Carta { get; set; }
+        public string Nome { get; private set; }
+        public Carta? Carta { get; set; }
+        public int Pontos { get; private set; }
 
-        public Jogador()
+        public Jogador(string nome)
         {
-            Carta = new Carta(0); // Valor padrão
+            Nome = nome;
+            Pontos = 0; // Garante que o jogador sempre comece com 0 pontos.
+        }
+
+        public void AdicionarPonto()
+        {
+            Pontos++;
         }
     }
 }

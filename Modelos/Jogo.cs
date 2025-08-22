@@ -2,73 +2,81 @@ namespace Modelos;
 
 class Jogo
 {
-    Baralho Baralho;
-    Jogador Jogador1;
-    Jogador Jogador2;
+    private Baralho Baralho { get; set; }
+    private Jogador Jogador1 { get; set; }
+    private Jogador Jogador2 { get; set; }
+    private int NumeroDeRodadas { get; set; }
 
-    public Jogo()
-    {
-        Baralho = new Baralho();
-        Jogador1 = new Jogador();
-        Jogador2 = new Jogador();
-    }
-
-    public Jogo(Baralho baralho)
+    public Jogo(Baralho baralho, string nomeJogador1, string nomeJogador2, int numeroDeRodadas = 5)
     {
         Baralho = baralho;
-        Jogador1 = new Jogador();
-        Jogador2 = new Jogador();
-    }
-
-    public Jogo(Baralho baralho, Jogador jogador1, Jogador jogador2)
-    {
-        Baralho = baralho;
-        Jogador1 = jogador1;
-        Jogador2 = jogador2;
+        Jogador1 = new Jogador(nomeJogador1);
+        Jogador2 = new Jogador(nomeJogador2);
+        NumeroDeRodadas = numeroDeRodadas;
     }
 
     public void Jogar()
     {
         Baralho.Embaralhar();
+
+        for (int i = 0; i < NumeroDeRodadas; i++)
+        {
+            Console.WriteLine($"\n--- Rodada {i + 1} ---");
+            JogarRodada();
+        }
+
+        VerificarGanhadorFinal();
+    }
+
+    private void JogarRodada()
+    {
+        // Verifica se há cartas suficientes para a rodada
+        if (Baralho.Cartas.Count < 2)
+        {
+            Console.WriteLine("Não há cartas suficientes no baralho para continuar.");
+            // Força o fim do loop no método Jogar()
+            NumeroDeRodadas = 0;
+            return;
+        }
+
         Jogador1.Carta = Baralho.DarCarta();
         Jogador2.Carta = Baralho.DarCarta();
 
-        VerificarGanhador();
-    }
+        Console.WriteLine($"{Jogador1.Nome} tirou a carta com pontuação: {Jogador1.Carta.Pontuacao()}");
+        Console.WriteLine($"{Jogador2.Nome} tirou a carta com pontuação: {Jogador2.Carta.Pontuacao()}");
 
-    private void VerificarGanhador()
-    {
-        int pontuacao1 = Jogador1.Carta.Pontuacao();
-        int pontuacao2 = Jogador2.Carta.Pontuacao();
-
-        if (pontuacao1 > pontuacao2)
+        if (Jogador1.Carta.Pontuacao() > Jogador2.Carta.Pontuacao())
         {
-            Console.WriteLine($"Jogador 1 ganhou! Pontuação: {pontuacao1} vs {pontuacao2}");
+            Jogador1.AdicionarPonto();
+            Console.WriteLine($"Ponto para {Jogador1.Nome}!");
         }
-        else if (pontuacao2 > pontuacao1)
+        else if (Jogador2.Carta.Pontuacao() > Jogador1.Carta.Pontuacao())
         {
-            Console.WriteLine($"Jogador 2 ganhou! Pontuação: {pontuacao1} vs {pontuacao2}");
+            Jogador2.AdicionarPonto();
+            Console.WriteLine($"Ponto para {Jogador2.Nome}!");
         }
         else
         {
-            Console.WriteLine($"Empate! Pontuação: {pontuacao1} vs {pontuacao2}");
+            Console.WriteLine("Empate na rodada!");
         }
-
-        // Exibe informações detalhadas das cartas
-        MostrarCarta("Jogador 1", Jogador1.Carta);
-        MostrarCarta("Jogador 2", Jogador2.Carta);
     }
 
-    private void MostrarCarta(string nomeJogador, Carta carta)
+    private void VerificarGanhadorFinal()
     {
-        if (carta is CartaComMultiplicador cm)
+        Console.WriteLine("\n--- Fim de Jogo ---");
+        Console.WriteLine($"Placar Final: {Jogador1.Nome} {Jogador1.Pontos} x {Jogador2.Pontos} {Jogador2.Nome}");
+
+        if (Jogador1.Pontos > Jogador2.Pontos)
         {
-            Console.WriteLine($"{nomeJogador}: Carta {cm.Valor} x{cm.Multiplicador} = {cm.Pontuacao()} pontos");
+            Console.WriteLine($"O grande vencedor é {Jogador1.Nome}!");
+        }
+        else if (Jogador2.Pontos > Jogador1.Pontos)
+        {
+            Console.WriteLine($"O grande vencedor é {Jogador2.Nome}!");
         }
         else
         {
-            Console.WriteLine($"{nomeJogador}: Carta {carta.Valor} = {carta.Pontuacao()} pontos");
+            Console.WriteLine("O jogo terminou em empate!");
         }
     }
-
 }
